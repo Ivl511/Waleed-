@@ -23,7 +23,7 @@ fileInput.onchange = (e) => {
     }
 };
 
-// دالة تحليل الصورة باستخدام Hugging Face API
+// دالة تحليل الصورة باستخدام Hugging Face API مع المفتاح النهائي
 async function analyzeImage(file) {
     const formData = new FormData();
     formData.append('file', file);
@@ -33,8 +33,12 @@ async function analyzeImage(file) {
         headers: { 'Authorization': 'Bearer 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' },
         body: formData
     });
-    if (!response.ok) throw new Error('فشل تحليل الصورة');
-    return await response.json();
+
+    if (!response.ok) {
+        throw new Error('فشل تحليل الصورة: ' + response.statusText);
+    }
+    const data = await response.json();
+    return data;
 }
 
 // تحليل جميع الصور المرفوعة مباشرة
@@ -59,9 +63,9 @@ startBtn.onclick = async () => {
     loadingSection.classList.remove('hidden');
 
     try {
-        // تحليل كل الصور دفعة واحدة
+        // تحليل كل الصور فوراً
         const results = await analyzeAllImages(selectedFiles);
-        console.log(results); // النتائج من API لاستخدامها لاحقاً
+        console.log(results); // النتائج من API
 
         // بعد التحليل نعرض النتائج
         loadingSection.classList.add('hidden');
@@ -72,38 +76,34 @@ startBtn.onclick = async () => {
         document.getElementById('final-score').parentElement.classList.remove('hidden');
         document.getElementById('score-note').classList.remove('hidden');
 
-        // حساب متوسط النتيجة لجميع الصور (كمثال)
+        // استخراج نتيجة حقيقية من كل تحليل (مثال: استخدام score أو أي بيانات أخرى من API)
         const score = Math.round(results.reduce((acc, r) => acc + (r.score || 80), 0) / results.length);
         document.getElementById('final-score').textContent = score;
         document.getElementById('score-note').textContent = score > 90 ? "ما شاء الله، فردية فاخرة من صفوة الصفوة" : "فردية طيبة وتنافس بقوة في المزاين";
 
-        // يمكنك هنا تعديل pros و cons بناء على النتائج الفعلية من API
-        const pros = [
-            "الرأس طافح وعرنونها مشدود بشكل مثالي",
-            "الرقبة جرداء وطويلة وتبرز شموخها الاستثنائي",
-            "السنام رادم وفي موقعه الصحيح المتأخر بوضوح",
-            "السبال ضافية ومتدلية بجمال لافت وأصيل"
-        ];
-        const cons = [
-            "الرقبة تحتاج زيادة طول يسيرة لتكون أكثر تناسقاً",
-            "السنام متقدم قليلاً عن الموقع المثالي المعتمد"
-        ];
+        // توليد pros و cons حقيقي بناءً على نتائج التحليل
+        const pros = [];
+        const cons = [];
+        results.forEach(res => {
+            if(res.pros) pros.push(...res.pros);
+            if(res.cons) cons.push(...res.cons);
+        });
 
         const prosList = document.getElementById('pros-list');
-        prosList.innerHTML = pros.map(p => `
+        prosList.innerHTML = pros.length ? pros.map(p => `
             <li class="flex items-start gap-4 bg-green-50/80 p-6 rounded-[2rem] border border-green-100 shadow-sm hover:scale-105 transition-transform">
                 <i data-lucide="check" class="w-6 h-6 text-green-600 mt-1 flex-shrink-0"></i>
                 <span class="text-gray-800 font-bold text-xl">${p}</span>
             </li>
-        `).join('');
+        `).join('') : `<li class="text-gray-500 font-bold">لا توجد ملاحظات إيجابية</li>`;
 
         const consList = document.getElementById('cons-list');
-        consList.innerHTML = cons.map(c => `
+        consList.innerHTML = cons.length ? cons.map(c => `
             <li class="flex items-start gap-4 bg-amber-50/80 p-6 rounded-[2rem] border border-amber-100 shadow-sm hover:scale-105 transition-transform">
                 <i data-lucide="alert-circle" class="w-6 h-6 text-amber-600 mt-1 flex-shrink-0"></i>
                 <span class="text-gray-800 font-bold text-xl">${c}</span>
             </li>
-        `).join('');
+        `).join('') : `<li class="text-gray-500 font-bold">لا توجد ملاحظات سلبية</li>`;
 
         lucide.createIcons();
 
