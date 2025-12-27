@@ -3,231 +3,130 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>نقاء – المنصة المتكاملة لتقييم جمال النوق</title>
+<title>نقاء – تقييم جمال النوق الفرديات</title>
 <script src="https://cdn.tailwindcss.com"></script>
-<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
-<script src="https://unpkg.com/lucide@latest"></script>
 <style>
-body { font-family: 'Cairo', sans-serif; background-color: #FDFBF7; color: #1a1a1a; }
-h1,h2,h3 { font-family: 'Tajawal', sans-serif; }
-.loading-spinner { border: 4px solid rgba(0,0,0,0.1); width:48px;height:48px;border-radius:50%;border-left-color:#d4a373;animation:spin 1s linear infinite; }
-@keyframes spin {0% {transform: rotate(0deg);} 100% {transform: rotate(360deg);}}
-.hidden {display:none;}
-.standard-card {transition:all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); overflow:hidden;}
-.standard-card:hover {transform:translateY(-10px);box-shadow:0 20px 25px -5px rgba(212,163,115,0.1),0 10px 10px -5px rgba(212,163,115,0.04);}
-.standard-card img {transition: transform 0.5s ease;}
-.standard-card:hover img {transform: scale(1.1);}
-.animate-float {animation: float 6s ease-in-out infinite;}
-@keyframes float {0% { transform: translateY(0px);} 50% { transform: translateY(-20px);} 100% { transform: translateY(0px);}}
+  body { font-family: 'Cairo', sans-serif; background-color: #FDFBF7; color: #1a1a1a; }
+  .hidden { display: none; }
+  .loading-spinner { border: 4px solid rgba(0,0,0,0.1); width:48px; height:48px; border-radius:50%; border-left-color:#d4a373; animation:spin 1s linear infinite;}
+  @keyframes spin { 0% { transform: rotate(0deg);} 100% { transform: rotate(360deg);} }
 </style>
 </head>
-<body class="min-h-screen relative overflow-x-hidden selection:bg-[#d4a373] selection:text-white">
+<body class="min-h-screen p-6 flex flex-col items-center">
 
-<div class="relative z-10 max-w-7xl mx-auto px-4 py-12 md:py-20">
+<h1 class="text-4xl font-black mb-4">نقاء – تقييم جمال النوق الفرديات</h1>
+<p class="mb-6 text-lg text-center max-w-xl">ارفع صور الناقة الصافية من زوايا مختلفة، وسوف نقدم لك تقييمًا دقيقًا بناءً على معايير جمال موثوقة مع تفسير مفصل.</p>
 
-<header class="text-center mb-24">
-<div class="inline-flex items-center gap-2 px-6 py-2 rounded-full bg-white border border-gray-200 shadow-sm mb-8 animate-fade-in">
-<i data-lucide="award" class="w-5 h-5 text-[#d4a373]"></i>
-<span class="text-sm md:text-base font-bold text-gray-700 tracking-wide">المنصة الرائدة لتقييم جمال النوق الفرديات</span>
-</div>
-<h1 class="text-7xl md:text-9xl font-black text-gray-900 mb-8 tracking-tighter">نقاء <span class="text-[#d4a373]">.</span></h1>
-<p class="text-2xl md:text-3xl text-gray-600 max-w-4xl mx-auto leading-relaxed font-medium">
-ارفع صور الناقة من زوايا واضحة للحصول على تقييم شامل يوضح تفاصيل التميز بناءً على أدق معايير الجمال الأصيلة.
-</p>
-</header>
+<input type="file" id="imageInput" accept="image/*" multiple class="mb-4">
+<button id="evalBtn" class="bg-[#d4a373] text-white px-8 py-3 rounded-lg font-bold">ابدأ التقييم</button>
 
-<div id="main-container" class="space-y-32">
-
-<div id="upload-section" class="bg-white rounded-[4rem] p-8 md:p-16 shadow-2xl border border-gray-50 relative overflow-hidden">
-<div id="drop-zone" class="relative z-10 border-4 border-dashed border-gray-100 rounded-[3rem] p-20 text-center hover:border-[#d4a373] transition-all cursor-pointer bg-gray-50/30 group">
-<input type="file" id="file-input" multiple accept="image/*" class="hidden">
-<div class="flex flex-col items-center gap-8">
-<div class="w-32 h-32 rounded-[2rem] bg-[#f7f1e3] flex items-center justify-center transform group-hover:rotate-12 transition-transform shadow-inner animate-float">
-<i data-lucide="camera" class="w-16 h-16 text-[#d4a373]"></i>
-</div>
-<div class="space-y-3">
-<h3 class="text-3xl md:text-4xl font-black text-gray-800">ارفع صور الناقة هنا</h3>
-<p class="text-gray-500 text-xl">الصور الواضحة ومن زوايا متعددة تضمن دقة النتائج</p>
-</div>
-<div id="file-status" class="hidden px-8 py-3 bg-[#d4a373] text-white rounded-2xl text-lg font-bold shadow-lg shadow-[#d4a373]/20"></div>
-</div>
+<div id="loading" class="hidden flex flex-col items-center mt-6">
+  <div class="loading-spinner mb-3"></div>
+  <p class="text-lg">جاري تحليل الصورة...</p>
 </div>
 
-<div class="mt-16 flex justify-center">
-<button id="start-btn" class="bg-[#d4a373] text-white px-20 py-6 rounded-3xl text-2xl font-black shadow-2xl hover:bg-[#c39262] transition-all transform hover:scale-105 active:scale-95 disabled:opacity-50 flex items-center gap-4">
-<i data-lucide="scan-line" class="w-8 h-8"></i> ابدأ التقييم الشامل
-</button>
-</div>
-</div>
-
-<div id="loading-section" class="hidden flex flex-col items-center gap-10 py-32 bg-white rounded-[4rem] shadow-2xl border border-gray-50">
-<div class="loading-spinner"></div>
-<div class="text-center space-y-4">
-<p class="text-3xl font-black text-gray-800">جاري تحليل أدق تفاصيل الجمال...</p>
-<p class="text-gray-500 text-xl">نقوم بمقارنة ملامح الناقة مع المعايير المعتمدة</p>
-</div>
-</div>
-
-<div id="result-section" class="hidden animate-in fade-in slide-in-from-bottom-20 duration-1000">
-<div id="result-card" class="bg-white rounded-[4rem] p-12 md:p-24 shadow-2xl border border-gray-50 relative overflow-hidden">
-<div class="absolute top-0 left-0 w-full h-4 bg-gradient-to-r from-transparent via-[#d4a373] to-transparent"></div>
-
-<div class="flex flex-col lg:flex-row gap-20 items-center lg:items-start">
-
-<div class="flex-shrink-0 text-center flex flex-col items-center">
-<div class="relative w-72 h-72 rounded-full bg-white shadow-2xl flex flex-col items-center justify-center border-[16px] border-[#f7f1e3] ring-1 ring-[#d4a373]/20">
-<span class="text-xl text-gray-400 font-bold mb-2 tracking-[0.2em] uppercase">الدرجة</span>
-<div id="final-score" class="text-9xl font-black text-[#d4a373] tracking-tighter">-</div>
-<span class="text-3xl text-gray-300 font-bold">/ 100</span>
-</div>
-<div id="score-note" class="mt-12 px-10 py-6 bg-[#f7f1e3] rounded-3xl text-2xl font-black text-[#d4a373] border border-[#d4a373]/10 shadow-lg"></div>
-</div>
-
-<div class="flex-1 w-full space-y-16">
-<div id="male-error" class="hidden p-12 bg-red-50 border border-red-100 rounded-[3rem] text-center shadow-inner">
-<i data-lucide="alert-octagon" class="w-24 h-24 text-red-500 mx-auto mb-8 animate-pulse"></i>
-<h3 class="text-4xl font-black text-red-700 mb-6">تعذر التقييم</h3>
-<p class="text-2xl text-red-600 font-bold leading-relaxed">هذا فحل/جمل، والمنصة مخصصة لتقييم النوق الفرديات فقط.</p>
-</div>
-
-<div id="success-details" class="space-y-16">
-<div>
-<h3 class="flex items-center gap-4 text-3xl font-black text-gray-900 mb-8 border-r-8 border-[#d4a373] pr-6">مكامن الجمال والتميز</h3>
-<ul id="pros-list" class="grid grid-cols-1 md:grid-cols-2 gap-6"></ul>
-</div>
-<div>
-<h3 class="flex items-center gap-4 text-3xl font-black text-gray-900 mb-8 border-r-8 border-amber-400 pr-6">ملاحظات التحسين</h3>
-<ul id="cons-list" class="grid grid-cols-1 md:grid-cols-2 gap-6"></ul>
-</div>
-</div>
-</div>
-</div>
-
-<div class="mt-20 flex justify-center pt-12 border-t border-dashed border-gray-100">
-<button id="reset-btn" class="bg-gray-900 text-white px-16 py-6 rounded-[2rem] text-2xl font-black hover:bg-gray-800 transition-all active:scale-95 shadow-2xl">
-تقييم ناقة أخرى
-</button>
-</div>
-</div>
-</div>
-
-</div>
-
-<footer class="text-center py-20 opacity-80 border-t border-gray-100">
-<p class="text-xl font-bold text-gray-600 leading-relaxed max-w-4xl mx-auto">
-هذا التقييم تقريبي ويعتمد على معايير الجمال المعتمدة للفرديات، وليس تحكيماً رسمياً. جميع الحقوق محفوظة لمنصة نقاء ©️ ٢٠٢٥
-</p>
-</footer>
+<div id="resultSection" class="hidden mt-8 w-full max-w-3xl bg-white p-6 rounded-xl shadow-lg">
+  <h2 class="text-2xl font-bold mb-4">نتيجة التقييم</h2>
+  <p id="scoreDisplay" class="text-xl font-bold mb-4"></p>
+  <h3 class="font-bold text-lg mb-2">إيجابيات:</h3>
+  <ul id="prosList" class="list-disc list-inside mb-4"></ul>
+  <h3 class="font-bold text-lg mb-2">ملاحظات التحسين:</h3>
+  <ul id="consList" class="list-disc list-inside"></ul>
 </div>
 
 <script>
-lucide.createIcons();
+const evalBtn = document.getElementById('evalBtn');
+const imageInput = document.getElementById('imageInput');
+const loading = document.getElementById('loading');
+const resultSection = document.getElementById('resultSection');
+const scoreDisplay = document.getElementById('scoreDisplay');
+const prosList = document.getElementById('prosList');
+const consList = document.getElementById('consList');
 
-const dropZone = document.getElementById('drop-zone');
-const fileInput = document.getElementById('file-input');
-const fileStatus = document.getElementById('file-status');
-const startBtn = document.getElementById('start-btn');
-const uploadSection = document.getElementById('upload-section');
-const loadingSection = document.getElementById('loading-section');
-const resultSection = document.getElementById('result-section');
-const resetBtn = document.getElementById('reset-btn');
-let selectedFiles = [];
+// توكن Hugging Face API الذي أعطيتني إياه
+const HF_API_TOKEN = "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";
 
-dropZone.onclick = () => fileInput.click();
-fileInput.onchange = (e) => {
-    selectedFiles = e.target.files;
-    if (selectedFiles.length > 0) {
-        fileStatus.textContent = `تم اختيار ${selectedFiles.length} صور بجودة عالية`;
-        fileStatus.classList.remove('hidden');
-    }
-};
+// نموذج BLIP-2 للذكاء البصري + اللغوي
+const HF_MODEL = "Salesforce/blip2-flan-t5-xl";
 
-startBtn.onclick = async () => {
-    if (selectedFiles.length === 0) {
-        alert('الرجاء رفع صورة واحدة على الأقل للبدء');
-        return;
-    }
+evalBtn.onclick = async () => {
+  if (!imageInput.files.length) {
+    alert("الرجاء رفع صورة ناقة واحدة على الأقل");
+    return;
+  }
 
-    uploadSection.classList.add('hidden');
-    loadingSection.classList.remove('hidden');
+  loading.classList.remove("hidden");
+  resultSection.classList.add("hidden");
 
-    const formData = new FormData();
-    for (const file of selectedFiles) {
-        formData.append('images', file);
-    }
+  const file = imageInput.files[0];
+  const reader = new FileReader();
+  reader.onloadend = async () => {
+    const base64Image = reader.result.split(",")[1];
 
-    formData.append('prompt', `
-        قارن الصور مع الفردية المثالية "خزامة" والمعايير:
-        - الرأس
-        - الرقبة
-        - السنام
-        - الغارب
-        - الوبر واللون
-        ارجع تقييم شامل من 0 إلى 100 مع ذكر الإيجابيات والسلبيات بلهجة عامية.
-        تجاهل أي فحول أو جمل.
-    `);
+    const prompt = `
+هذه صورة لناقة فردية. قُم بتحليل جمالها بناءً على المعايير التالية:
+1. الرأس والوجه
+2. الرقبة وطولها وشكلها
+3. السنام وموقعه
+4. الغارب والقوائم
+5. الوبر واللون
+6. التناسق العام للجسم
 
-    try {
-        const response = await fetch('https://api.replicate.com/v1/predictions', {
-            method: 'POST',
-            headers: {
-                'Authorization': 'Token r8_3y4DPbQ6hRLbWi0HBxMAcd4y8JOyvU03vIN2z'
-            },
-            body: formData
-        });
-        const result = await response.json();
-        // افترض result.output يحتوي على:
-        // {score: 92, pros: [...], cons: [...], isMale: false}
-        const data = result.output[0]; // حسب شكل البيانات
+قارنها ضمنيًا مع أفضل الفرديات مثل خزامة، واذكر:
+- درجة جمال من 0 إلى 100
+- إيجابيات
+- نقاط التحسين
 
-        loadingSection.classList.add('hidden');
-        resultSection.classList.remove('hidden');
+إذا لم تكن الصورة لناقة فردية (فحل/جمل/إنسان)، اعد رسالة:
+"التقييم فشل: هذا ليس ناقة فردية"
+`;
 
-        if (data.isMale) {
-            document.getElementById('success-details').classList.add('hidden');
-            document.getElementById('male-error').classList.remove('hidden');
-            document.getElementById('final-score').parentElement.classList.add('hidden');
-            document.getElementById('score-note').classList.add('hidden');
-        } else {
-            document.getElementById('success-details').classList.remove('hidden');
-            document.getElementById('male-error').classList.add('hidden');
-            document.getElementById('final-score').parentElement.classList.remove('hidden');
-            document.getElementById('score-note').classList.remove('hidden');
-
-            document.getElementById('final-score').textContent = data.score;
-            document.getElementById('score-note').textContent = data.score > 90 ? "ما شاء الله، فردية فاخرة من صفوة الصفوة" : "فردية طيبة وتنافس بقوة في المزاين";
-
-            const prosList = document.getElementById('pros-list');
-            prosList.innerHTML = data.pros.map(p => `
-                <li class="flex items-start gap-4 bg-green-50/80 p-6 rounded-[2rem] border border-green-100 shadow-sm hover:scale-105 transition-transform">
-                    <i data-lucide="check" class="w-6 h-6 text-green-600 mt-1 flex-shrink-0"></i>
-                    <span class="text-gray-800 font-bold text-xl">${p}</span>
-                </li>`).join('');
-
-            const consList = document.getElementById('cons-list');
-            consList.innerHTML = data.cons.map(c => `
-                <li class="flex items-start gap-4 bg-amber-50/80 p-6 rounded-[2rem] border border-amber-100 shadow-sm hover:scale-105 transition-transform">
-                    <i data-lucide="alert-circle" class="w-6 h-6 text-amber-600 mt-1 flex-shrink-0"></i>
-                    <span class="text-gray-800 font-bold text-xl">${c}</span>
-                </li>`).join('');
+    const response = await fetch(`https://api-inference.huggingface.co/pipeline/visual-question-answering`, {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${HF_API_TOKEN}`,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        model: HF_MODEL,
+        inputs: {
+          image: `data:image/jpeg;base64,${base64Image}`,
+          question: prompt
         }
-        lucide.createIcons();
-    } catch (err) {
-        alert("حدث خطأ في الاتصال بالنموذج، حاول مرة أخرى.");
-        console.error(err);
-        loadingSection.classList.add('hidden');
-        uploadSection.classList.remove('hidden');
-    }
-};
+      })
+    });
+    
+    const data = await response.json();
 
-resetBtn.onclick = () => {
-    resultSection.classList.add('hidden');
-    uploadSection.classList.remove('hidden');
-    fileInput.value = '';
-    fileStatus.classList.add('hidden');
-    selectedFiles = [];
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    loading.classList.add("hidden");
+    resultSection.classList.remove("hidden");
+
+    if (!data || !data[0] || typeof data[0].answer !== "string") {
+      scoreDisplay.textContent = "حدث خطأ في التقييم، حاول مرة أخرى.";
+      prosList.innerHTML = "";
+      consList.innerHTML = "";
+      return;
+    }
+
+    const answerText = data[0].answer;
+    const lines = answerText.split("\n").map(l => l.trim()).filter(l => l);
+
+    let scoreLine = lines.find(l => /[0-9]{1,3}/.test(l));
+    let scoreVal = scoreLine ? scoreLine.match(/[0-9]{1,3}/)[0] : "?";
+    scoreDisplay.textContent = `الدرجة: ${scoreVal}/100`;
+
+    let pros = [], cons = [];
+    lines.forEach(l => {
+      if (/إيجاب/i.test(l) || l.startsWith("-")) pros.push(l);
+      if (/سلبي/i.test(l) || /تحسين/i.test(l)) cons.push(l);
+    });
+
+    prosList.innerHTML = pros.map(p => `<li>${p}</li>`).join("");
+    consList.innerHTML = cons.map(c => `<li>${c}</li>`).join("");
+  };
+  reader.readAsDataURL(file);
 };
 </script>
+
 </body>
 </html>
